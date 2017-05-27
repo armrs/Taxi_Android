@@ -2,7 +2,7 @@ package com.taxi_test;
 
 public class Driver {
 
-	String x ="asda";
+
 	private String id;
 	private String name;
 	private String email;

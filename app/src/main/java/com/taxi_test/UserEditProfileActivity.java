@@ -33,6 +33,7 @@ public class UserEditProfileActivity extends Activity implements OnClickListener
 	Button cancelBtn,saveBtn;
 	Context con;
 	JSONParser jparser=new JSONParser();
+    String name_et,number_et,password_et;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,9 @@ public class UserEditProfileActivity extends Activity implements OnClickListener
 				if(!TextUtils.isEmpty(nameEt.getText().toString())){
 					if(!TextUtils.isEmpty(numberEt.getText().toString())){
 						if(!TextUtils.isEmpty(passwordEt.getText().toString())){
+							name_et = nameEt.getText().toString();
+                            number_et = numberEt.getText().toString();
+                            password_et = passwordEt.getText().toString();
 							new UpdateInfo().execute();
 						}else  Util.showToast(this, "Please enter your password");
 					}else  Util.showToast(this, "Please enter your phone number");
@@ -114,9 +118,9 @@ public class UserEditProfileActivity extends Activity implements OnClickListener
 		@Override
 		protected String doInBackground(String... st) {
 			String email=UserInfo.getEmail();
-			String password=passwordEt.getText().toString();
-			String name=nameEt.getText().toString();
-			String number=numberEt.getText().toString();
+			String password=password_et;
+			String name=name_et;
+			String number=number_et;
 
 			List<NameValuePair> params=new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("email", email));

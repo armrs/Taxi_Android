@@ -50,7 +50,7 @@ public class DriverActivity extends Activity{
 
 	public static final String getRidesUrl = "http://chakron.com/demo/cruzer/requested-rides-list.php";
 	public static final String modeSendUrl = "http://chakron.com/demo/cruzer/receievemode.php";
-
+	Integer selected_one;
 	Context con;
 	JSONParser jparser=new JSONParser();
 	GPSTracker gps;
@@ -99,6 +99,7 @@ public class DriverActivity extends Activity{
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int i, long arg3) {
+				selected_one = categoryFilter.getSelectedItemPosition();
 				new GetRequestedRides().execute();
 			}
 
@@ -111,7 +112,7 @@ public class DriverActivity extends Activity{
 		sh=getSharedPreferences("CRUZER_PREF", MODE_PRIVATE);
 		notAccReq=sh.getInt("notaccreq", 0);
 
-
+        selected_one = categoryFilter.getSelectedItemPosition();
 		new GetRequestedRides().execute();
 		new SendLocation().execute();
 
@@ -140,6 +141,7 @@ public class DriverActivity extends Activity{
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.driverRefreshMenu:
+            selected_one = categoryFilter.getSelectedItemPosition();
 			new GetRequestedRides().execute();
 			break;
 		case R.id.driverLogoutMenu:
@@ -201,18 +203,18 @@ public class DriverActivity extends Activity{
 						map.put("timedate", job.getString("timedate"));
 						map.put("accept", job.getString("accept"));
 
-						if(categoryFilter.getSelectedItemPosition()==0)
+						if(selected_one==0)
 							rides.add(map);
-						else if(categoryFilter.getSelectedItemPosition()==1){
+						else if(selected_one==1){
 							if(job.getString("accept").equals("0"))
 								rides.add(map);
-						}else if(categoryFilter.getSelectedItemPosition()==2){
+						}else if(selected_one==2){
 							if(job.getString("accept").equals("1"))
 								rides.add(map);
-						}else if(categoryFilter.getSelectedItemPosition()==3){
+						}else if(selected_one==3){
 							if(job.getString("accept").equals("2"))
 								rides.add(map);
-						}else if(categoryFilter.getSelectedItemPosition()==4){
+						}else if(selected_one==4){
 							if(job.getString("accept").equals("3"))
 								rides.add(map);
 						}
@@ -339,6 +341,7 @@ public class DriverActivity extends Activity{
 				if(Util.isConnectingToInternet(DriverActivity.this)){
 					gps=new GPSTracker(con);
 					new SendLocation().execute();
+                    selected_one = categoryFilter.getSelectedItemPosition();
 					new GetRequestedRides().execute();
 
 					Toast.makeText(con, gps.getLatitude()+" "+gps.getLongitude(), Toast.LENGTH_SHORT).show();
@@ -477,6 +480,7 @@ public class DriverActivity extends Activity{
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode==101 && resultCode==RESULT_OK){
+            selected_one = categoryFilter.getSelectedItemPosition();
 			new GetRequestedRides().execute();
 		}
 	}

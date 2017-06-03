@@ -61,6 +61,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 	SharedPreferences sh;
 
 	JSONParser jparser=new JSONParser();
+	String registration_name,registration_email,registration_password,registration_phone;
+    String drlogin_email,drlogin_password,email_et,password_et;
+    String lostpass_email;
+
 
 	private static final String regiURL = "http://chakron.com/demo/cruzer/registration.php";
 	public static final String loginURL = "http://chakron.com/demo/cruzer/login.php";
@@ -145,6 +149,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 		case R.id.loginSubmitBtn:
 			if(!TextUtils.isEmpty(emailEt.getText().toString())){
 				if(!TextUtils.isEmpty(passwordEt.getText().toString())){
+                    email_et = emailEt.getText().toString();
+                    password_et = passwordEt.getText().toString();
+                    drlogin_password = drloginPassword.getText().toString();
+                    drlogin_email = drloginEmail.getText().toString();
+
 					new Login().execute("client");  
 				}else Toast.makeText(this, "Please enter your password", Toast.LENGTH_SHORT).show();
 			}else{
@@ -185,7 +194,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 					if(!TextUtils.isEmpty(registrationEmail.getText().toString()) && Util.validEmail(registrationEmail.getText().toString()) ){
 						if(!TextUtils.isEmpty(registrationPhone.getText().toString())){
 							if((registrationPassword.getText().toString()).equals(registrationConfirmPassword.getText().toString()) && !TextUtils.isEmpty(registrationPassword.getText().toString())){
-								Registration reg=new Registration();
+                                registration_name = registrationName.getText().toString();
+                                registration_email = registrationEmail.getText().toString();
+                                registration_password = registrationPassword.getText().toString();
+                                registration_phone = registrationPhone.getText().toString();
+                                Registration reg=new Registration();
 								reg.execute();
 							}else{
 								toastText="Your password is not the same";
@@ -235,6 +248,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			@Override
 			public void onClick(View arg0) {
 				if(!TextUtils.isEmpty(lostPassEmail.getText().toString())){
+                    lostpass_email = lostPassEmail.getText().toString();
 					new RecoverPassword().execute();
 				}else{
 					lostPassResltText.setText("Please enter your email");
@@ -267,10 +281,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 		@Override
 		protected String doInBackground(String... arg0) {	
-			String name=registrationName.getText().toString();
-			String email=registrationEmail.getText().toString();
-			String password=registrationPassword.getText().toString();
-			String number =registrationPhone.getText().toString();
+			String name=registration_name;
+			String email=registration_email;
+			String password=registration_password;
+			String number =registration_phone;
 
 			List<NameValuePair> params=new ArrayList<NameValuePair>();
 			params.add(new BasicNameValuePair("name", name));
@@ -367,7 +381,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 			public void onClick(View arg0) {
 
 				if(!TextUtils.isEmpty(drloginEmail.getText().toString())  && !TextUtils.isEmpty(drloginPassword.getText().toString())){
-					Login login=new Login();
+                    email_et = emailEt.getText().toString();
+                    password_et = passwordEt.getText().toString();
+                    drlogin_password = drloginPassword.getText().toString();
+                    drlogin_email = drloginEmail.getText().toString();
+                    Login login=new Login();
 					login.execute("driver");
 				}else{
 					Toast.makeText(con, "Please enter value", Toast.LENGTH_SHORT).show();
@@ -424,12 +442,12 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 
 			if(st!=null && st[0].equals("driver")){
-				email=drloginEmail.getText().toString();
-				password=drloginPassword.getText().toString();
+				email=drlogin_email;
+				password=drlogin_password;
 				driver=true;
 			}else{
-				email=emailEt.getText().toString();
-				password=passwordEt.getText().toString();
+				email=email_et;
+				password=password_et;
 			}
 
 			List<NameValuePair> params=new ArrayList<NameValuePair>();
@@ -523,7 +541,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 		protected String doInBackground(String... args) {
 
 			List<NameValuePair> params=new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("email", lostPassEmail.getText().toString()));
+			params.add(new BasicNameValuePair("email", lostpass_email));
 
 			try {
 				JSONObject jobj=jparser.makeHttpRequest(recoverPasswordURL, "POST", params);

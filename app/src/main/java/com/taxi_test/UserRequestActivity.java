@@ -42,7 +42,7 @@ public class UserRequestActivity extends Activity{
 	JSONParser jparser=new JSONParser();
 	public static final String getRidesUrl = "http://chakron.com/demo/cruzer/user-rides-list.php";
 	ArrayList<HashMap<String, String>> rides;
-	
+	Integer selected_opt;
 	Spinner categoryFilter;
 	String dropdownItems[]={"All","Pending Requests","Accepted Requests","Completed Rides","Cancelled"};
 
@@ -56,6 +56,7 @@ public class UserRequestActivity extends Activity{
 		categoryFilter.setAdapter(new ArrayAdapter<String>(this	, android.R.layout.simple_dropdown_item_1line, dropdownItems));
 		
 		requestList=(ListView) findViewById(R.id.userRequestList);
+		selected_opt = categoryFilter.getSelectedItemPosition();
 		new GetRequestedRides().execute();
 		
 		requestList.setOnItemClickListener(new OnItemClickListener() {
@@ -74,6 +75,7 @@ public class UserRequestActivity extends Activity{
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int i, long arg3) {
+				selected_opt = categoryFilter.getSelectedItemPosition();
 				new GetRequestedRides().execute();
 			}
 
@@ -144,18 +146,18 @@ public class UserRequestActivity extends Activity{
 						map.put("timedate", job.getString("timedate"));
 						map.put("accept", job.getString("accept"));
 						
-						if(categoryFilter.getSelectedItemPosition()==0)
+						if(selected_opt==0)
 						rides.add(map);
-						else if(categoryFilter.getSelectedItemPosition()==1){
+						else if(selected_opt==1){
 							if(job.getString("accept").equals("0"))
 								rides.add(map);
-						}else if(categoryFilter.getSelectedItemPosition()==2){
+						}else if(selected_opt==2){
 							if(job.getString("accept").equals("1"))
 								rides.add(map);
-						}else if(categoryFilter.getSelectedItemPosition()==3){
+						}else if(selected_opt==3){
 							if(job.getString("accept").equals("2"))
 								rides.add(map);
-						}else if(categoryFilter.getSelectedItemPosition()==4){
+						}else if(selected_opt==4){
 							if(job.getString("accept").equals("3"))
 								rides.add(map);
 						}
@@ -246,6 +248,7 @@ public class UserRequestActivity extends Activity{
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if(requestCode==101 && resultCode==RESULT_OK)
+            selected_opt = categoryFilter.getSelectedItemPosition();
 			new GetRequestedRides().execute();
 	}
 }
